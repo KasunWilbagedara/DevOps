@@ -14,7 +14,7 @@ export default function Signup() {
     const data = await res.json();
     if (res.ok) {
       alert("Signup successful! You can now login.");
-      window.location.href = "/login"; // redirect to login page
+      window.location.href = "/Home"; // redirect to login page
     } else {
       alert(data.message);
     }

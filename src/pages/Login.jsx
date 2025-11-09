@@ -1,22 +1,34 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-      window.location.href = "/dashboard"; 
-    } else {
-      alert(data.message);
+    console.log("Attempting login with:", email, password);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      console.log("Response data:", data);
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        navigate("/Home"); // navigate to home
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Something went wrong. Please try again.");
     }
   };
 
@@ -50,7 +62,6 @@ export default function Login() {
           Login
         </button>
 
-        {/* Signup button/link */}
         <p className="text-center mt-4">
           Don’t have an account?{" "}
           <a href="/signup" className="text-green-600 hover:underline">
